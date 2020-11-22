@@ -1,0 +1,240 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "My Digital Information",
+    "description": "My Digital Information API. This API can be used to generate the URL which front end app will use to generate to the QR code for the given consumer information. This service will be utilized by My Digital Frontend app."
+  },
+  "paths": {
+    "/customers": {
+      "post": {
+        "summary": "Process Consumers data to Create QR Code",
+        "tags": [
+          "Digital Info"
+        ],
+        "requestBody": {
+          "description": "Add Customer Information",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/healthInfo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "summary": "Retrieve Customer Information using Customer Id",
+        "tags": [
+          "Digital Info"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Return Customer Information",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customerInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "customerInfo": {
+        "type": "object",
+        "required": [
+          "name",
+          "addressLine",
+          "city",
+          "state",
+          "zipCode",
+          "phoneNumber"
+        ],
+        "properties" : {
+          "name" : {
+            "maxLength" : 50,
+            "type" : "string",
+            "pattern":"^[A-Za-z0-9 ]+$"
+          },
+          "addressLine" : {
+            "maxLength" : 75,
+            "type" : "string",
+            "pattern":"^[A-Za-z0-9 ]+$"
+          },
+          "city" : {
+            "maxLength" : 50,
+            "type" : "string",
+            "pattern": "^[A-Za-z ]+$"
+          },
+          "state" : {
+            "maxLength" : 2,
+            "minLength" : 2,
+            "type" : "string",
+            "pattern": "^[A-Za-z]+$"
+          },
+          "zipCode" : {
+            "maxLength" : 5,
+            "type" : "string",
+            "pattern": "^[0-9]+$"
+          },
+          "phoneNumber" : {
+            "maxLength" : 10,
+            "type" : "string",
+            "pattern": "^[0-9]+$"
+          }
+        }
+      },
+      "healthInfo": {
+        "type": "object",
+        "required": [
+          "fever",
+          "cough",
+          "travel",
+          "virusExposure"
+        ],
+        "allOf": [
+          {
+            "type": "object"
+          },
+          {
+            "$ref": "#/components/schemas/customerInfo"
+          }
+        ],
+        "properties": {
+          "fever": {
+            "type": "boolean"
+          },
+          "cough": {
+            "type": "boolean"
+          },
+          "travel": {
+            "type": "boolean"
+          },
+          "virusExposure": {
+            "type": "boolean"
+          }
+        }
+      },
+      "response": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "qrCodeURL": {
+            "type": "string",
+            "description": "URL which will be used by frontend to create the QR Code"
+          }
+        }
+      },
+      "Error": {
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "To return the error code such 001,002,003"
+          },
+          "message": {
+            "type": "string",
+            "description": "To return the error message such as Invalid Customer information - Bad request, Invalid Customer Id - Bad request, UnAuthorized Access"
+          }
+        }
+      }
+    }
+  }
+}

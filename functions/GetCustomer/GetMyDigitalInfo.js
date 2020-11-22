@@ -1,10 +1,12 @@
 const AWS = require("aws-sdk");
+//Creating Dynamo DB Object
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 /*Function To Handle the GET request by Customer ID*/
 exports.handler = async event => {
   
   let customerId = event.id;
+  //Return HTTP StatusCode 400 for Bad Data
   let response = {statusCode: 400}
   const params = {
     TableName: "CustomerInfo", 

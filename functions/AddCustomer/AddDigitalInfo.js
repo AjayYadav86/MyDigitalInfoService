@@ -1,6 +1,8 @@
 const AWS = require("aws-sdk");
+//Crypto API to generate the UUID
 const crypto = require("crypto");
 const generateUUID = () => crypto.randomBytes(16).toString("hex");
+//Dynamo DB to create the Dynamo DB Client
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async event => {
@@ -25,8 +27,10 @@ exports.handler = async event => {
       statusCode: 200,
       customerId: customerId
     };
+    console.log(response);
     return response; // Returning a 200 if the item has been inserted 
   } catch (e) {
+    console.log(e);
     return {
       statusCode: 500,
       body: JSON.stringify(e)
